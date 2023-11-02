@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block section %}
+    <h2>Autores</h2>
+    <hr>
+{% endblock section %}
+
+{% block maincontent %}
+
+<div class="container">
+    <table class="table table-striped mt-5">
+        <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Nacionalidad</th>
+              <th scope="col">Opciones </th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for p in object_list.all %}
+                <tr>
+                    <th >{{forloop.counter}}</th>
+                    <td>{{p.nombre}}</td>
+                    <td>{{p.nacionalidad}}</td>
+                    <td>
+                        <div>
+                            <button type="button" class="btn btn-outline-primary">Editar</button>
+                            <button type="button" class="btn btn-outline-danger">Eliminar</button>
+                            
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+           
+        </tbody>
+    </table>
+</div>
+
+{% endblock maincontent %}
