@@ -9,36 +9,286 @@
 {% block maincontent %}
 
 <div class="container">
-    <table class="table table-striped mt-5">
+
+    <div class="text-center mt-4">
+        <h1>Libros</h1>
+    </div>
+    <div class="d-flex flex-row-reverse mt-5">
+        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#añadirModal" onclick="modalAnadirLibro()">
+            Añadir libro +
+        </button>
+    </div>
+
+    <table class="table table-striped mt-3">
         <thead>
             <tr>
               <th scope="col">#</th>
               <th scope="col">Titulo</th>
               <th scope="col">Autor</th>
               <th scope="col">Genero</th>
-              <th scope="col">Opciones</th>
+              <th scope="col">Año de publicacion</th>
+              <th scope="col">Opciones
+               
             </tr>
         </thead>
         <tbody>
            
-            {% for p in object_list.all %}
+            {% for p in libros %}
                 <tr>
                     <th >{{forloop.counter}}</th>
                     <td>{{p.titulo}}</td>
                     <td>{{p.autor}}</td>
                     <td>{{p.genero}}</td>
+                    <td>{{p.anio}}</td>
                     <td>
                         <div>
-                            <button type="button" class="btn btn-outline-primary">Editar</button>
-                            <button type="button" class="btn btn-outline-danger">Eliminar</button>
-                            
+                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editarModal" onclick="modalEditarLibro('{{p.id}}')">Editar</button>
+                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal{{ forloop.counter }}">Eliminar</button>
                         </div>
                     </td>
+                    <td></td>
                 </tr>
+
+                <!-- Añadir  -->
+
+                <form method="post" action="{% url 'libro-create' %}">{% csrf_token %}
+                    <div class="modal fade  modal-lg " id="añadirModal" tabindex="-1"  aria-labelledby="añadirModalLabel" aria-hidden="true">
+                        
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="añadirModalLabel">Añadir Libro</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col" style="font-weight: bold;">Titulo </div>
+                                            <div class="col">
+                                                <input type="text" name="titulo">
+                                            </div>
+                                        </div>
+
+                                        <!-- Dropdown Autor -->
+                                        <div class="row mt-3">
+                                            <div class="col" style="font-weight: bold;">Autor </div>
+                                            <div class="col">
+                                                <button id="dropdownAutores" class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Autores
+                                                </button>
+                                                <ul id="optionsAutor" class="dropdown-menu">
+                                                    
+                                                </ul>
+                                                <input type="hidden" name="autor" id="selectedAutor" value="">
+                                            </div>
+                                        </div>
+                                        <!-- Dropdown Genero  -->
+                                        <div class="row mt-3">
+                                            <div class="col" style="font-weight: bold;">Genero </div>
+                                            <div class="col">
+                                                <button id="dropdownGenero" class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Generos
+                                                </button>
+                                                <ul  id="optionsGenero" class="dropdown-menu">
+                                                
+                                                </ul>
+                                                <input type="hidden" name="genero" id="selectedGenero" value="">
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+
+
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"  onclick="mostrarModal()">Cancelar</button>
+                                    <button type="submit" class="btn btn-success"  >Guardar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>    
+                </form>
+
+                <!-- Editar -->
+
+                <form method="post" action="{% url 'libro-create' %}">{% csrf_token %}
+                    <div class="modal fade  modal-lg " id="editarModal" tabindex="-1"  aria-labelledby="editarModalLabel" aria-hidden="true">
+                        
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="editarModalLabel"></h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col" style="font-weight: bold;">Titulo </div>
+                                            <div class="col">
+                                                <input type="text" name="titulo">
+                                            </div>
+                                        </div>
+
+                                        <!-- Dropdown Autor -->
+                                        <div class="row mt-3">
+                                            <div class="col" style="font-weight: bold;">Autor </div>
+                                            <div class="col">
+                                                <button id="dropdownAutores" class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Autores
+                                                </button>
+                                                <ul id="optionsAutor" class="dropdown-menu">
+                                                    
+                                                </ul>
+                                                <input type="hidden" name="autor" id="selectedAutor" value="">
+                                            </div>
+                                        </div>
+                                        <!-- Dropdown Genero  -->
+                                        <div class="row mt-3">
+                                            <div class="col" style="font-weight: bold;">Genero </div>
+                                            <div class="col">
+                                                <button id="dropdownGenero" class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Generos
+                                                </button>
+                                                <ul  id="optionsGenero" class="dropdown-menu">
+                                                
+                                                </ul>
+                                                <input type="hidden" name="genero" id="selectedGenero" value="">
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+
+
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"  onclick="mostrarModal()">Cancelar</button>
+                                    <button type="submit" class="btn btn-success"  >Guardar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>    
+                </form>
+
+
+                <!-- Eliminar -->
+                <div class="modal fade" id="exampleModal{{ forloop.counter }}" tabindex="-1"  aria-labelledby="exampleModalLabel{{ forloop.counter }}" aria-hidden="true">
+                    
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel{{ forloop.counter }}">Eliminar</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            ¿Estas seguro de eliminar el elemento ?
+                        </div>
+                        <div class="modal-footer">
+                            <form method="post" action="{% url 'libro-delete-accion' p.id %}">{% csrf_token %}
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">No</button>
+                                <button type="submit" class="btn btn-danger"  onclick="mostrarModal('{{ p.id}}')" >Si</button>
+                            </form>
+                        </div>
+                        </div>
+                    </div>
+                </div>    
             {% endfor %}
            
         </tbody>
     </table>
+
 </div>
 
+
+<script>
+    function mostrarModal(libroId) {
+        var titulo = $('input[name="titulo"]').val();
+        console.log('Título:', titulo);
+    }
+
+    function modalAnadirLibro(){
+
+        // autores
+
+        $.ajax({
+            url: '{% url "obtener_autores" %}',
+            type: 'GET',
+            success: function (data) {
+                var autoresDropdown = $('#optionsAutor');
+                data = JSON.parse(data);
+                console.log(data);
+                autoresDropdown.empty()
+                data.forEach(function (x) {
+                    autoresDropdown.append('<li class="dropdown-item actorSelect" data-value="'+x.pk+'">' + x.fields.nombre + '</li>');
+                });
+
+                autoresDropdown.on('click', '.actorSelect', function () {
+                    var selectedOption = $(this).text();
+                    var selectedValue = $(this).data('value');
+                    $('#dropdownAutores').text(selectedOption);
+                    $('#selectedAutor').val(selectedValue);
+                   
+                });
+
+                
+            }
+        });
+
+        // generos
+        $.ajax({
+            url: '{% url "obtener_generos" %}',
+            type: 'GET',
+            success: function (data) {
+                var generosDropdown = $('#optionsGenero');
+                data = JSON.parse(data)
+                generosDropdown.empty()
+                data.forEach(function (x) {
+                    generosDropdown.append('<li class="dropdown-item generoSelect" data-value="'+x.pk+'">' + x.fields.tipo + '</li>');
+
+                });
+
+                generosDropdown.on('click', '.generoSelect', function () {
+                    var selectedOption = $(this).text();
+                    var selectedValue = $(this).data('value');
+                    $('#dropdownGenero').text(selectedOption);
+                    $('#selectedGenero').val(selectedValue);
+
+                });
+
+                
+            }
+        });
+
+
+
+    }
+
+    function modalEditarLibro(id){
+        console.log(id);
+        $.ajax({
+            url: '{% url "libro-update-accion" pk=0 %}'.replace('0', id),
+            type: 'GET',
+            success: function (data) {
+
+                // var autoresDropdown = $('#optionsAutor');
+                // data = JSON.parse(data);
+                // data.forEach(function (x) {
+                //     autoresDropdown.append('<li class="dropdown-item actorSelect" data-value="'+x.pk+'">' + x.fields.nombre + '</li>');
+                // });
+
+                // autoresDropdown.on('click', '.actorSelect', function () {
+                //     var selectedOption = $(this).text();
+                //     var selectedValue = $(this).data('value');
+                //     $('#dropdownAutores').text(selectedOption);
+                //     $('#selectedAutor').val(selectedValue);
+                   
+                // });
+
+                
+            }
+        });
+
+    }
+</script>
 {% endblock maincontent %}

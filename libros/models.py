@@ -37,6 +37,8 @@ class Libro(models.Model):
     titulo = models.CharField(max_length=50)
     autor = models.ForeignKey('Autor', on_delete=models.PROTECT,related_name='get_autor')
     genero = models.ForeignKey('Genero', on_delete=models.PROTECT,related_name='get_genero')
+    anio = models.CharField(max_length=50)
+    
     pub_date = models.DateField(auto_now_add=True)
     
     def __str__(self):
